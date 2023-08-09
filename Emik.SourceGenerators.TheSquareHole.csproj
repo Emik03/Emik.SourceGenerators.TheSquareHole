@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Description>Adds structural typing to C#.</Description>
+        <DisableDefaultDocumentation>true</DisableDefaultDocumentation>
+        <RepositoryUrl>https://github.com/Emik03/Emik.SourceGenerators.TheSquareHole</RepositoryUrl>
+        <PackageTags>Structural Typing StructuralTyping Implementation Interface Trait Inference Infer Source Generator Analyzer Roslyn</PackageTags>
+    </PropertyGroup>
+</Project>
