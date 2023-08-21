@@ -3,6 +3,7 @@
         <TargetFramework>net7.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
+        <Compile Include="../GlobalUsings.g.cs"/>
         <PackageReference Remove="UnitGenerator"/>
         <Compile Remove="$(Morsels)/Compile/**/*.cs"/>
         <PackageReference Include="Emik.Unions" Version="2.1.1" PrivateAssets="all"/>
