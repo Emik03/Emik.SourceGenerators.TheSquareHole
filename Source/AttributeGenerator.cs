@@ -2,7 +2,9 @@
 namespace Emik.SourceGenerators.TheSquareHole;
 
 /// <summary>Generates the attribute needed to use this analyzer.</summary>
+#pragma warning disable RS1038
 [Generator]
+#pragma warning restore RS1038
 public sealed class AttributeGenerator() : FixedGenerator(
     "Emik.NoStructuralTypingAttribute",
     """

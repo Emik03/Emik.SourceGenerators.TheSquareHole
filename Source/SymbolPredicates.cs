@@ -12,7 +12,10 @@ static class SymbolPredicates
         left.IsSameBaseKindAs(right) &&
         left.IsStatic == right.IsStatic &&
         (left is IArrayTypeSymbol or IParameterSymbol or IPointerTypeSymbol ||
-            !left.Name.IsNullOrEmpty() && left.Name == right.Name);
+            !left.Name.IsNullOrEmpty() && left.Name == right.Name) &&
+        (left.ContainingNamespace is not { IsGlobalNamespace: false, Name: not null and not "" } leftContainer ||
+            right.ContainingNamespace is not { IsGlobalNamespace: false, Name: not null and not "" } rightContainer ||
+            leftContainer.IsCandidate(rightContainer));
 
     /// <summary>Determines whether the symbol is an implicit declaration for an interface.</summary>
     /// <param name="symbol">The symbol to check.</param>
