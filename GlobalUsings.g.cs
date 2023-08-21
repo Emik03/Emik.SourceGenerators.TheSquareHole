@@ -292,6 +292,7 @@ global using global::Microsoft.CodeAnalysis.NamingStyles;
 global using global::Microsoft.CodeAnalysis.Notification;
 global using global::Microsoft.CodeAnalysis.Operations;
 global using global::Microsoft.CodeAnalysis.Options;
+global using global::Microsoft.CodeAnalysis.Options.Providers;
 global using global::Microsoft.CodeAnalysis.OrganizeImports;
 global using global::Microsoft.CodeAnalysis.Packaging;
 global using global::Microsoft.CodeAnalysis.PatternMatching;
@@ -338,11 +339,6 @@ global using global::Microsoft.CodeAnalysis.Telemetry;
 global using global::Microsoft.CodeAnalysis.Text;
 global using global::Microsoft.CodeAnalysis.UnitTests;
 global using global::Microsoft.CodeAnalysis.Utilities;
-global using global::Microsoft.CodeAnalysis.VisualBasic;
-global using global::Microsoft.CodeAnalysis.VisualBasic.CodeGeneration;
-global using global::Microsoft.CodeAnalysis.VisualBasic.CodeStyle;
-global using global::Microsoft.CodeAnalysis.VisualBasic.Formatting;
-global using global::Microsoft.CodeAnalysis.VisualBasic.Simplification;
 global using global::Microsoft.CodeAnalysis.Workspaces;
 global using global::Microsoft.CodeAnalysis.Workspaces.Diagnostics;
 global using global::Microsoft.CodeAnalysis.Workspaces.ProjectSystem;
@@ -946,6 +942,8 @@ namespace Microsoft.CodeAnalysis.Operations { }
 
 namespace Microsoft.CodeAnalysis.Options { }
 
+namespace Microsoft.CodeAnalysis.Options.Providers { }
+
 namespace Microsoft.CodeAnalysis.OrganizeImports { }
 
 namespace Microsoft.CodeAnalysis.Packaging { }
@@ -1037,16 +1035,6 @@ namespace Microsoft.CodeAnalysis.Text { }
 namespace Microsoft.CodeAnalysis.UnitTests { }
 
 namespace Microsoft.CodeAnalysis.Utilities { }
-
-namespace Microsoft.CodeAnalysis.VisualBasic { }
-
-namespace Microsoft.CodeAnalysis.VisualBasic.CodeGeneration { }
-
-namespace Microsoft.CodeAnalysis.VisualBasic.CodeStyle { }
-
-namespace Microsoft.CodeAnalysis.VisualBasic.Formatting { }
-
-namespace Microsoft.CodeAnalysis.VisualBasic.Simplification { }
 
 namespace Microsoft.CodeAnalysis.Workspaces { }
 
