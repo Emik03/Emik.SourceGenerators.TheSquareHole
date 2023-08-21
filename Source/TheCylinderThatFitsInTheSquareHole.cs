@@ -2,7 +2,9 @@
 namespace Emik.SourceGenerators.TheSquareHole;
 
 /// <summary>The source generator that implements structural typing.</summary>
+#pragma warning disable RS1038
 [CLSCompliant(false), Generator]
+#pragma warning restore RS1038
 public sealed class TheCylinderThatFitsInTheSquareHole : ISourceGenerator
 {
     /// <inheritdoc />
