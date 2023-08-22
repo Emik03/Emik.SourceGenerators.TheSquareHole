@@ -14,9 +14,12 @@ struct SymbolSpan
     /// <summary>Gets the length of <see cref="Span{T}"/> instances that comes from <see cref="SymbolSpan"/>.</summary>
     public const int Length = 7;
 
+    /// <summary>The first element of the buffer, used for creating the <see cref="Span{T}"/> over this type.</summary>
+    public ISymbol Head;
+
     [UsedImplicitly]
 #pragma warning disable IDE0044
-    ISymbol _a, _b, _c, _d, _e, _f, _g;
+    ISymbol _a, _b, _c, _d, _e, _f;
 #pragma warning restore IDE0044
 
     static SymbolSpan()
@@ -35,6 +38,6 @@ struct SymbolSpan
     public static Span<ISymbol> New(in bool _ = default)
     {
         Unsafe.SkipInit(out SymbolSpan span);
-        return MemoryMarshal.CreateSpan(ref span._a, Length);
+        return MemoryMarshal.CreateSpan(ref span.Head, Length);
     }
 }
