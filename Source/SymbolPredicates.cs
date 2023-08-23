@@ -11,6 +11,7 @@ static class SymbolPredicates
     public static bool IsCandidate(this ISymbol? left, ISymbol? right) =>
         left.IsSameBaseKindAs(right) &&
         left.IsStatic == right.IsStatic &&
+        (left as ITypeSymbol)?.SpecialType == (right as ITypeSymbol)?.SpecialType &&
         (left is IArrayTypeSymbol or IParameterSymbol or IPointerTypeSymbol ||
             !left.Name.IsNullOrEmpty() && left.Name == right.Name);
 
