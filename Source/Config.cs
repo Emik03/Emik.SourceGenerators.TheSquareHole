@@ -19,7 +19,7 @@ readonly record struct Config(
         IncludeNullabilityFallback = false,
         IncludeParameterNameFallback = false;
 
-    const byte MaxSubstitutionDepthFallback = SmallList<TypeEntry>.InlinedLength;
+    const byte MaxSubstitutionDepthFallback = SmallList.InlinedLength;
 
     const string Prefix = "the_square_hole_";
 
