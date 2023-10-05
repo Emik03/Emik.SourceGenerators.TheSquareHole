@@ -86,12 +86,13 @@ Use `.editorconfig`/`.globalconfig` to configure this source generator:
 
 ---
 
-| Option  | `the_square_hole_enable_concurrency`                                                                                                  |
-|---------|---------------------------------------------------------------------------------------------------------------------------------------|
-| Summary | Determines whether to enable concurrency for inspections.                                                                             |
-| Remarks | Concurrency is only faster in large projects due to overhead in initializing concurrent behavior, hence why it's disabled by default. |
-| Type    | `bool`                                                                                                                                |
-| Default | `false`                                                                                                                               |
+| Option   | `the_square_hole_enable_concurrency`                                                                                                                                                                                                                                                                                                  |
+|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Summary  | Determines whether to enable concurrency for inspections.                                                                                                                                                                                                                                                                             |
+| Remarks  | Concurrency is only faster in large projects due to overhead in initializing concurrent behavior, hence why it's disabled by default.                                                                                                                                                                                                 |
+| Obsolete | This option is deprecated starting from `1.1` and onwards due to the migration of the favorable [`IIncrementalGenerator`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.iincrementalgenerator) over [`ISourceGenerator`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.isourcegenerator). |
+| Type     | `bool`                                                                                                                                                                                                                                                                                                                                |
+| Default  | `false`                                                                                                                                                                                                                                                                                                                               |
 
 ---
 
