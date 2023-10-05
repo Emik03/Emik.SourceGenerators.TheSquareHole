@@ -11,17 +11,12 @@ sealed record Substitutes(
     SmallList<TypeEntry> Mapper = default
 )
 {
-    static readonly ConcurrentDictionary<INamedTypeSymbol, ISymbol[]> s_cache = new(NamedTypeSymbolComparer.Default);
-
     const string
         TestInterface = "ISquare",
         TestType = "Cylinder";
 
     /// <summary>Gets the interface.</summary>
     public INamedTypeSymbol Interface => Tree.Node;
-
-    /// <summary>Clears the cache.</summary>
-    public static void Clear() => s_cache.Clear();
 
     /// <summary>Determines whether the names of the types match.</summary>
     /// <param name="typeSymbol">The type to test.</param>
@@ -129,11 +124,6 @@ sealed record Substitutes(
                 ? entry.PartialComplies() ? entry : default
                 : potentialGenerics.Select(x => new TypeEntry(param, x)).Where(y => y.Complies()).ToSmallList();
     }
-
-    /// <summary>Gets or adds the symbol..</summary>
-    /// <param name="symbol">The symbol to get or add.</param>
-    /// <returns>The <see cref="Span{T}"/> of <see cref="ISymbol"/>.</returns>
-    public static Span<ISymbol> GetOrAdd(INamedTypeSymbol symbol) => s_cache.GetOrAdd(symbol, MembersWithPotential);
 
     /// <inheritdoc />
     public bool Equals(Substitutes? x) =>
@@ -320,7 +310,8 @@ sealed record Substitutes(
         if (x.HasDefaultImplementation())
             return true;
 
-        foreach (var next in GetOrAdd(Type))
+        // ReSharper disable once LoopCanBeConvertedToQuery
+        foreach (var next in MembersWithPotential(Type))
             if (func(next, x))
                 return true;
 
@@ -330,7 +321,7 @@ sealed record Substitutes(
     static (ISymbol?, ISymbol?) Underlying(ISymbol? x, ISymbol? y) =>
         (x.UnderlyingNullable() ?? x, y.UnderlyingNullable() ?? y);
 
-    static ISymbol[] MembersWithPotential(INamedTypeSymbol type)
+    static Span<ISymbol> MembersWithPotential(INamedTypeSymbol type)
     {
         static bool HasPotential(ISymbol x) =>
             x.IsAccessible() && x.IsMember() && x.IsLegalName() && !x.IsIgnored() && !x.IsExplicitInterfaceDefinition();

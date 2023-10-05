@@ -38,6 +38,10 @@ sealed record Scaffolder(string FileName, string Contents) : IEqualityComparer<S
     /// <param name="context">The <see cref="GeneratorExecutionContext"/> to add source code.</param>
     public void AddTo(GeneratorExecutionContext context) => context.AddSource(FileName, Contents);
 
+    /// <summary>Adds itself to the context.</summary>
+    /// <param name="context">The <see cref="GeneratorExecutionContext"/> to add source code.</param>
+    public void AddTo(SourceProductionContext context) => context.AddSource(FileName, Contents);
+
     /// <inheritdoc />
     bool IEqualityComparer<Substitutes>.Equals(Substitutes? x, Substitutes? y) =>
         x is null ? y is null : y is not null && !x.CanCoexistWith(y);

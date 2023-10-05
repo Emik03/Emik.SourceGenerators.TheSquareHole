@@ -2,13 +2,15 @@
 namespace Emik.SourceGenerators.TheSquareHole;
 
 /// <summary>Defines the configurations for this source generator.</summary>
-/// <param name="EnableConcurrency">Determines whether to enable concurrency for inspections.</param>
+/// <param name="EnableConcurrency">Determines whether to enable concurrency for inspections. Obsolete.</param>
 /// <param name="IncludeNullability">Determines whether or not to include nullability as a restriction.</param>
 /// <param name="IncludeParameterName">Determines whether or not to include parameter names as a restriction.</param>
-/// <param name="MaxSubstitutionDepth">Determines the maximum number of type substitutions allowed for a given interface.</param>
+/// <param name="MaxSubstitutionDepth">
+/// Determines the maximum number of type substitutions allowed for a given interface.
+/// </param>
 [StructLayout(LayoutKind.Auto)]
 readonly record struct Config(
-    bool EnableConcurrency,
+    [property: Obsolete] bool EnableConcurrency,
     bool IncludeNullability,
     bool IncludeParameterName,
     byte MaxSubstitutionDepth
@@ -35,6 +37,15 @@ readonly record struct Config(
             ParseParameterName(options),
             ParseMaxSubstitutionDepth(options)
         );
+
+    /// <summary>
+    /// Creates the instance of <see cref="Config"/> based on the provided <see cref="AnalyzerConfigOptionsProvider"/>.
+    /// </summary>
+    /// <param name="provider">The options to parse.</param>
+    /// <param name="_">The discard cancellation token.</param>
+    /// <returns>The options used by this source generator.</returns>
+    public static Config From(AnalyzerConfigOptionsProvider provider, CancellationToken _) =>
+        From(provider.GlobalOptions);
 
     /// <summary>
     /// Creates the instance of <see cref="Config"/> based on the provided <see cref="AnalyzerConfigOptionsProvider"/>.

@@ -5,52 +5,38 @@ namespace Emik.SourceGenerators.TheSquareHole;
 #pragma warning disable RS1038
 [CLSCompliant(false), Generator]
 #pragma warning restore RS1038
-public sealed class TheCylinderThatFitsInTheSquareHole : ISourceGenerator
+public sealed class TheCylinderThatFitsInTheSquareHole : IIncrementalGenerator
 {
     /// <inheritdoc />
-    void ISourceGenerator.Execute(GeneratorExecutionContext context) =>
-#if DEBUG
-        new BadLogger().Try(Go, context).Dispose();
-#else
-        Go(context);
-#endif
-
-    /// <inheritdoc />
-    void ISourceGenerator.Initialize(GeneratorInitializationContext context) { }
-
-    static void Go(GeneratorExecutionContext context)
+    void IIncrementalGenerator.Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // ReSharper disable once MissingIndent
-        if (context is not
-        {
-            AnalyzerConfigOptions: var config,
-            Compilation: { Assembly: var assembly, GlobalNamespace: var global },
-        })
-            return;
+        var owned = context.SyntaxProvider.CreateSyntaxProvider(Is<BaseTypeDeclarationSyntax>, Transform).Filter();
+        var interfaces = context.CompilationProvider.Select(InterfaceTrees);
+        var config = context.AnalyzerConfigOptionsProvider.Select(Config.From);
+        var provider = owned.Combine(interfaces).Combine(config);
+        context.RegisterSourceOutput(provider, Go);
+    }
 
-        Substitutes.Clear();
+    static void Go(SourceProductionContext context, ((INamedTypeSymbol, IList<InterfaceTree>), Config) tuple)
+    {
+        var ((named, trees), config) = tuple;
+        trees.SelectMany(x => Substitutes.From(named, x, config)).Then(Scaffolder.Generate)?.AddTo(context);
+    }
 
-        var trees = global
+    static IList<InterfaceTree> InterfaceTrees(Compilation compilation, CancellationToken token) =>
+        compilation
+           .GlobalNamespace
            .GetAllMembers()
            .OfType<INamedTypeSymbol>()
            .Where(IncludedSyntaxNodeRegistrant.IsInterface)
-           .Where(x => x.IsFullyAccessible(assembly))
+           .Where(x => x.IsFullyAccessible(compilation.Assembly))
            .Then(InterfaceTree.From);
 
-        // This is the hotspot. Optimizations should occur within this call.
-        void Next(INamedTypeSymbol type) =>
-            trees.SelectMany(x => Substitutes.From(type, x, config)).Then(Scaffolder.Generate)?.AddTo(context);
-
-        var types = assembly
-           .GetAllMembers()
-           .OfType<INamedTypeSymbol>()
-           .Omit(SymbolPredicates.IsIgnored)
-           .Omit(IncludedSyntaxNodeRegistrant.IsInterface)
-           .Where(SymbolPredicates.IsExtendable);
-
-        if (config.GlobalOptions.Then(Config.From).EnableConcurrency)
-            Parallel.ForEach(types.AsParallel(), Next);
-        else
-            types.Lazily(Next).Enumerate();
-    }
+    static INamedTypeSymbol? Transform(GeneratorSyntaxContext context, CancellationToken token) =>
+        context.SemanticModel.GetSymbolInfo(context.Node, token).Symbol is INamedTypeSymbol named &&
+        !named.IsInterface() &&
+        named.IsExtendable() &&
+        !named.IsIgnored()
+            ? named
+            : null;
 }
