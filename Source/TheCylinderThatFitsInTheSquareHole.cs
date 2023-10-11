@@ -10,7 +10,11 @@ public sealed class TheCylinderThatFitsInTheSquareHole : IIncrementalGenerator
     /// <inheritdoc />
     void IIncrementalGenerator.Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var owned = context.SyntaxProvider.CreateSyntaxProvider(Is<BaseTypeDeclarationSyntax>, Transform).Filter();
+        var owned = context
+           .SyntaxProvider
+           .AgainstAttributeWithMetadataName(Of<AttributeGenerator>(), Is<BaseTypeDeclarationSyntax>, Transform)
+           .Filter();
+
         var interfaces = context.CompilationProvider.Select(InterfaceTrees);
         var config = context.AnalyzerConfigOptionsProvider.Select(Config.From);
         var provider = owned.Combine(interfaces).Combine(config);
@@ -20,6 +24,7 @@ public sealed class TheCylinderThatFitsInTheSquareHole : IIncrementalGenerator
     static void Go(SourceProductionContext context, ((INamedTypeSymbol, IList<InterfaceTree>), Config) tuple)
     {
         var ((named, trees), config) = tuple;
+
         trees.SelectMany(x => Substitutes.From(named, x, config)).Then(Scaffolder.Generate)?.AddTo(context);
     }
 
@@ -32,11 +37,6 @@ public sealed class TheCylinderThatFitsInTheSquareHole : IIncrementalGenerator
            .Where(x => x.IsFullyAccessible(compilation.Assembly))
            .Then(InterfaceTree.From);
 
-    static INamedTypeSymbol? Transform(GeneratorSyntaxContext context, CancellationToken token) =>
-        context.SemanticModel.GetSymbolInfo(context.Node, token).Symbol is INamedTypeSymbol named &&
-        !named.IsInterface() &&
-        named.IsExtendable() &&
-        !named.IsIgnored()
-            ? named
-            : null;
+    static INamedTypeSymbol? Transform(SyntaxNode _, ISymbol x, SemanticModel __, CancellationToken ___) =>
+        x is INamedTypeSymbol named && !named.IsInterface() && named.IsExtendable() ? named : null;
 }

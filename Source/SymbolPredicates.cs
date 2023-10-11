@@ -59,14 +59,6 @@ static class SymbolPredicates
     public static bool IsGenericEquals([NotNullWhen(true)] this ISymbol? symbol) =>
         symbol is IMethodSymbol { IsStatic: false, Name: nameof(Equals), Parameters: [{ Type: ITypeParameterSymbol }] };
 
-    /// <summary>Determines whether the symbol is ignored.</summary>
-    /// <param name="symbol">The symbol to check.</param>
-    /// <returns>
-    /// The value <see langword="true"/> if the parameter <paramref name="symbol"/>
-    /// has the attribute to be ignored, otherwise; <see langword="false"/>.
-    /// </returns>
-    public static bool IsIgnored(this ISymbol symbol) => symbol.HasAttribute("NoStructuralTyping");
-
     /// <summary>Determines whether the symbol has a legal name.</summary>
     /// <param name="symbol">The symbol to check.</param>
     /// <returns>The value <see langword="true"/> if the parameter <paramref name="symbol"/> has a legal name.</returns>

@@ -8,7 +8,7 @@ static class Extract
     /// <param name="span">The name of the type.</param>
     /// <param name="symbols">The generics.</param>
     /// <returns>Whether the span has the name of the interface with its nested generics.</returns>
-    public static bool MatchesGenerics(this ReadOnlySpan<char> span, Span<TypeEntry> symbols) =>
+    public static bool MatchesGenerics(this in ReadOnlySpan<char> span, Span<TypeEntry> symbols) =>
         0 is var to && span.MatchesGenerics<TypeEntry>(symbols, ref to, x => x.Value);
 
     /// <summary>Determines whether the span has the name of the interface with its nested generics.</summary>
@@ -19,8 +19,8 @@ static class Extract
     /// <param name="symbolic">The callback that converts each element into the symbol.</param>
     /// <returns>Whether the span has the name of the interface with its nested generics.</returns>
     public static bool MatchesGenerics<T>(
-        this ReadOnlySpan<char> span,
-        ReadOnlySpan<T> symbols,
+        this in ReadOnlySpan<char> span,
+        in ReadOnlySpan<T> symbols,
         ref int to,
         Converter<T, ITypeSymbol> symbolic
     )
@@ -35,7 +35,14 @@ static class Extract
         return false;
     }
 
-    static bool MatchesGenerics<T>(
+    /// <summary>Determines whether the span has the name of the interface with its nested generics.</summary>
+    /// <typeparam name="T">The type of symbol.</typeparam>
+    /// <param name="span">The name of the type.</param>
+    /// <param name="symbolic">The callback that converts each element into the symbol.</param>
+    /// <param name="to">The current index.</param>
+    /// <param name="enumerator">The enumeration of generics.</param>
+    /// <returns>Whether the span has the name of the interface with its nested generics.</returns>
+    public static bool MatchesGenerics<T>(
         in ReadOnlySpan<char> span,
         Converter<T, ITypeSymbol> symbolic,
         ref int to,
@@ -59,15 +66,6 @@ static class Extract
     /// <summary>Gets all of the parameters and type arguments of the symbol.</summary>
     /// <param name="symbol">The symbol to get the parameters and type arguments from.</param>
     /// <returns>The <see cref="IEnumerable{T}"/> containing all underlying types.</returns>
-    // ReSharper restore TailRecursiveCall
-    public static IEnumerable<ISymbol> AllParameters(this ISymbol? symbol) =>
-        symbol
-           .ToUnderlyingEnumerable()
-           .Concat(symbol.ToParameterSymbols());
-
-    /// <summary>Gets all of the parameters and type arguments of the symbol.</summary>
-    /// <param name="symbol">The symbol to get the parameters and type arguments from.</param>
-    /// <returns>The <see cref="IEnumerable{T}"/> containing all underlying types.</returns>
     public static IEnumerable<ITypeSymbol> AllTypes(this ISymbol? symbol) =>
         symbol
            .AsTypeSymbolEnumerable()
@@ -83,60 +81,6 @@ static class Extract
     /// <param name="span">The string depicting a type member to extract the implicit interface from.</param>
     /// <returns>The implicit interface, or <see cref="ReadOnlySpan{T}.Empty"/>.</returns>
     public static ReadOnlySpan<char> ExplicitInterface(this ReadOnlySpan<char> span) => span[FindInterface(span)];
-
-    /// <summary>Gets the alias of the string, or itself.</summary>
-    /// <param name="span">The string to get the alias of.</param>
-    /// <returns>The alias of the parameter <paramref name="span"/>, or the parameter <paramref name="span"/>.</returns>
-    public static ReadOnlySpan<char> ToAlias(this ReadOnlySpan<char> span) =>
-        span switch
-        {
-            $"{nameof(System)}.{nameof(Boolean)}" => "bool".AsSpan(),
-            $"{nameof(System)}.{nameof(Byte)}" => "byte".AsSpan(),
-            $"{nameof(System)}.{nameof(Char)}" => "char".AsSpan(),
-            $"{nameof(System)}.{nameof(Decimal)}" => "decimal".AsSpan(),
-            $"{nameof(System)}.{nameof(Double)}" => "double".AsSpan(),
-            $"{nameof(System)}.{nameof(Int16)}" => "short".AsSpan(),
-            $"{nameof(System)}.{nameof(Int32)}" => "int".AsSpan(),
-            $"{nameof(System)}.{nameof(Int64)}" => "long".AsSpan(),
-            $"{nameof(System)}.{nameof(IntPtr)}" => "nint".AsSpan(),
-            $"{nameof(System)}.{nameof(Object)}" => "object".AsSpan(),
-            $"{nameof(System)}.{nameof(SByte)}" => "sbyte".AsSpan(),
-            $"{nameof(System)}.{nameof(Single)}" => "float".AsSpan(),
-            $"{nameof(System)}.{nameof(String)}" => "string".AsSpan(),
-            $"{nameof(System)}.{nameof(UInt16)}" => "ushort".AsSpan(),
-            $"{nameof(System)}.{nameof(UInt32)}" => "uint".AsSpan(),
-            $"{nameof(System)}.{nameof(UInt64)}" => "ulong".AsSpan(),
-            $"{nameof(System)}.{nameof(UIntPtr)}" => "nuint".AsSpan(),
-            $"{nameof(System)}.Void" => "void".AsSpan(),
-            _ => span,
-        };
-
-    /// <summary>Gets the alias of the string, or itself.</summary>
-    /// <param name="span">The string to get the alias of.</param>
-    /// <returns>The alias of the parameter <paramref name="span"/>, or the parameter <paramref name="span"/>.</returns>
-    public static ReadOnlySpan<char> Unalias(this ReadOnlySpan<char> span) =>
-        span switch
-        {
-            "bool" => $"{nameof(System)}.{nameof(Boolean)}".AsSpan(),
-            "byte" => $"{nameof(System)}.{nameof(Byte)}".AsSpan(),
-            "char" => $"{nameof(System)}.{nameof(Char)}".AsSpan(),
-            "decimal" => $"{nameof(System)}.{nameof(Decimal)}".AsSpan(),
-            "double" => $"{nameof(System)}.{nameof(Double)}".AsSpan(),
-            "short" => $"{nameof(System)}.{nameof(Int16)}".AsSpan(),
-            "int" => $"{nameof(System)}.{nameof(Int32)}".AsSpan(),
-            "long" => $"{nameof(System)}.{nameof(Int64)}".AsSpan(),
-            "nint" => $"{nameof(System)}.{nameof(IntPtr)}".AsSpan(),
-            "object" => $"{nameof(System)}.{nameof(Object)}".AsSpan(),
-            "sbyte" => $"{nameof(System)}.{nameof(SByte)}".AsSpan(),
-            "float" => $"{nameof(System)}.{nameof(Single)}".AsSpan(),
-            "string" => $"{nameof(System)}.{nameof(String)}".AsSpan(),
-            "ushort" => $"{nameof(System)}.{nameof(UInt16)}".AsSpan(),
-            "uint" => $"{nameof(System)}.{nameof(UInt32)}".AsSpan(),
-            "ulong" => $"{nameof(System)}.{nameof(UInt64)}".AsSpan(),
-            "nuint" => $"{nameof(System)}.{nameof(UIntPtr)}".AsSpan(),
-            "void" => $"{nameof(System)}.Void".AsSpan(),
-            _ => span,
-        };
 
     /// <summary>Gets the unqualified name of the symbol.</summary>
     /// <remarks><para>
@@ -155,7 +99,7 @@ static class Extract
     /// <summary>Finds the implicit interface of the provided argument.</summary>
     /// <param name="span">The string depicting a type member to extract the implicit interface from.</param>
     /// <returns>The range of characters in which the implicit interface exists.</returns>
-    public static Range FindInterface(this ReadOnlySpan<char> span)
+    public static Range FindInterface(this in ReadOnlySpan<char> span)
     {
         if (span is ['.', ..])
             return default;
@@ -185,7 +129,7 @@ static class Extract
     }
 #pragma warning restore CA1508
 
-    static bool SameName(this ReadOnlySpan<char> name, ISymbol current) =>
+    static bool SameName(this in ReadOnlySpan<char> name, ISymbol current) =>
         (current switch
         {
             IArrayTypeSymbol x => x.ElementType,
@@ -209,7 +153,7 @@ static class Extract
             _ => true,
         };
 
-    static bool SameName(this SplitSpan<char> fullName, ISymbol current)
+    static bool SameName(this in SplitSpan<char> fullName, ISymbol current)
     {
         if (fullName.Single().SameName(current))
             return true;
@@ -230,7 +174,7 @@ static class Extract
     }
 
     static ControlFlow Step<T>(
-        ReadOnlySpan<char> span,
+        in ReadOnlySpan<char> span,
         ref int to,
         Converter<T, ITypeSymbol> symbolic,
         ReadOnlySpan<T>.Enumerator enumerator,
@@ -282,17 +226,6 @@ static class Extract
         matchesGenerics = span[to++] is '>';
         return ControlFlow.Break;
     }
-
-    static IEnumerable<ISymbol> ToParameterSymbols(this ISymbol? symbol) =>
-        symbol switch
-        {
-            IPropertySymbol x => x.Parameters,
-            INamedTypeSymbol x => x.TypeArguments,
-            IMethodSymbol x => x.Parameters.AsEnumerable<ISymbol>().Concat(x.TypeArguments),
-            IFunctionPointerTypeSymbol { Signature: var x }
-                => x.Parameters.AsEnumerable<ISymbol>().Concat(x.TypeArguments),
-            _ => Enumerable.Empty<ITypeSymbol>(),
-        };
 
     static IEnumerable<ITypeSymbol> AsTypeSymbolEnumerable(this ISymbol? symbol) =>
         symbol is ITypeSymbol i ? i.Yield() : Enumerable.Empty<ITypeSymbol>();

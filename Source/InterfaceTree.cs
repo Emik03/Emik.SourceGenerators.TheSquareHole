@@ -2,8 +2,8 @@
 namespace Emik.SourceGenerators.TheSquareHole;
 
 /// <summary>Represents multiple interfaces as a tree of inheritance.</summary>
-/// <param name="node">The current interface.</param>
-sealed class InterfaceTree(INamedTypeSymbol node) : ICustomFormatter
+/// <param name="symbol">The current interface.</param>
+sealed class InterfaceTree(INamedTypeSymbol symbol) : ICustomFormatter
 {
     SmallList<InterfaceTree> _children, _parents;
 
@@ -14,7 +14,7 @@ sealed class InterfaceTree(INamedTypeSymbol node) : ICustomFormatter
     public IEnumerable<InterfaceTree> ParentsRecursively => GetFlattenedEnumerator(x => x.Parents);
 
     /// <summary>Gets the current interface.</summary>
-    public INamedTypeSymbol Node { get; } = node;
+    public INamedTypeSymbol Node { get; } = symbol;
 
     /// <summary>Gets the children.</summary>
     public ref SmallList<InterfaceTree> Children => ref _children;
@@ -46,7 +46,7 @@ sealed class InterfaceTree(INamedTypeSymbol node) : ICustomFormatter
 
     /// <inheritdoc />
     public override string ToString() =>
-        $"{node.Stringify()} has {_children.Count.Conjugate("child", "ren")} and {_parents.Count.Conjugate("parent")}";
+        $"{symbol.Stringify()} has {_children.Count.Conjugate("child", "ren")} and {_parents.Count.Conjugate("parent")}";
 
     /// <summary>Gets the enumeration recursively based on the function.</summary>
     /// <param name="func">The function to use for each enumeration.</param>

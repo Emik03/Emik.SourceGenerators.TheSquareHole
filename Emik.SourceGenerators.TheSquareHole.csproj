@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <FileVersion>1.1</FileVersion>
+        <FileVersion>1.1.1</FileVersion>
         <TargetFramework>netstandard2.0</TargetFramework>
         <Description>Adds structural typing to C#.</Description>
         <RepositoryUrl>https://github.com/Emik03/Emik.SourceGenerators.TheSquareHole</RepositoryUrl>

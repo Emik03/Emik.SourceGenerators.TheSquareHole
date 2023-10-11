@@ -10,7 +10,8 @@ namespace Emik.SourceGenerators.TheSquareHole;
 /// </param>
 [StructLayout(LayoutKind.Auto)]
 readonly record struct Config(
-    [property: Obsolete($"{nameof(IIncrementalGenerator)} removes the need for concurrency")] bool EnableConcurrency,
+    [property: Obsolete($"{nameof(IIncrementalGenerator)} removes the need for concurrency"), UsedImplicitly]
+    bool EnableConcurrency,
     bool IncludeNullability,
     bool IncludeParameterName,
     byte MaxSubstitutionDepth

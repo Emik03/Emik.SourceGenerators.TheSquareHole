@@ -324,7 +324,11 @@ sealed record Substitutes(
     static Span<ISymbol> MembersWithPotential(INamedTypeSymbol type)
     {
         static bool HasPotential(ISymbol x) =>
-            x.IsAccessible() && x.IsMember() && x.IsLegalName() && !x.IsIgnored() && !x.IsExplicitInterfaceDefinition();
+            x.IsAccessible() &&
+            x.IsMember() &&
+            x.IsLegalName() &&
+            !x.IsExplicitInterfaceDefinition() &&
+            !x.HasAttributeWithFullyQualifiedMetadataName(Of<AttributeGenerator>());
 
         return type
            .FindPathToNull(Extract.BaseTypeThatHasParents)
