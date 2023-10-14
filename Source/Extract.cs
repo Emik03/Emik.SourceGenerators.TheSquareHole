@@ -189,7 +189,7 @@ static class Extract
 
         var current = symbolic(enumerator.Current);
 
-        if (!span[from..to].SplitAll(".".AsSpan()).SameName(current))
+        if (!span[from..to].SplitAll(['.']).SameName(current))
         {
             matchesGenerics = false;
             return ControlFlow.Break;

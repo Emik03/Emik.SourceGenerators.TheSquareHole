@@ -27,7 +27,7 @@ sealed class InterfaceTree(INamedTypeSymbol symbol) : ICustomFormatter
     /// <returns>The list of trees based on the hierarchy structure within <paramref name="interfaces"/>.</returns>
     public static IList<InterfaceTree> From(IEnumerable<INamedTypeSymbol> interfaces)
     {
-        List<InterfaceTree> accumulator = new();
+        List<InterfaceTree> accumulator = [];
 
         foreach (var next in interfaces)
             Step(ref accumulator, next);

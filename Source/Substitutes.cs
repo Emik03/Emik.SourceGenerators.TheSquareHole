@@ -342,7 +342,7 @@ sealed record Substitutes(
     bool IsSame(ISymbol symbol) =>
         symbol.Name.AsSpan().ExplicitInterface() is [.. var name, '.'] &&
         (name.IndexOf('<') is var open and not -1 ? open : name.Length) is var to &&
-        name[..to].SplitAny(".".AsSpan()).Last().SequenceEqual(Interface.Name.AsSpan()) &&
+        name[..to].SplitAny(".".AsSpan()).Last().SequenceEqual([.. Interface.Name]) &&
         (Precision is Low || Mapper.HeadSpan(name[to..], static (x, y) => y.MatchesGenerics(x)));
 
     bool SameAnnotations(ISymbol? x, ISymbol? y) =>

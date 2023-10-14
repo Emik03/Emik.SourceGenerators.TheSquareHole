@@ -18,7 +18,8 @@ sealed record Scaffolder(string FileName, string Contents) : IEqualityComparer<S
             return null;
 
         var hintName = head.Type.HintName();
-        var content = Template(type, tail.Prepend(head).Select(x => x.NameOfInterface()));
+        var interfaces = tail.Prepend(head).Select(x => x.NameOfInterface()).ToSet();
+        var content = Template(type, interfaces);
         return new(hintName, content);
     }
 
@@ -47,7 +48,7 @@ sealed record Scaffolder(string FileName, string Contents) : IEqualityComparer<S
     }
 
     static string Inherit(IEnumerable<string> interfaces, int indent) =>
-        interfaces.Distinct(StringComparer.Ordinal).Conjoin($",\n{new string(' ', indent * 4)}");
+        interfaces.Conjoin($",\n{new string(' ', indent * 4)}");
 
     static string Template(ITypeSymbol type, IEnumerable<string> collection)
     {
