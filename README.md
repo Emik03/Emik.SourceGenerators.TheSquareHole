@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/Emik03/Emik.SourceGenerators.TheSquareHole.svg?style=flat)](https://github.com/Emik03/Emik.SourceGenerators.TheSquareHole/blob/main/LICENSE)
 
 <blockquote>
-    <img src="Images/icon.png" alt="icon.png" width="50"/>
+    <img src="https://raw.githubusercontent.com/Emik03/Emik.SourceGenerators.TheSquareHole/main/Images/icon.png" alt="icon.png" width="50"/>
     &emsp;
     <a href="https://youtu.be/Nz8ssH7LiB0?t=22">
        "And up next, a cylinder. Hmm, I think that goes in... the square hole!"
