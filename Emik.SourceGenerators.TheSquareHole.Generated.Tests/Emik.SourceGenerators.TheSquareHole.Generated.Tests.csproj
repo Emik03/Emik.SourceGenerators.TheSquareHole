@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
+        <RepositoryUrl>https://github.com/Emik03/Emik.SourceGenerators.TheSquareHole</RepositoryUrl>
+        <PackageTags>Structural Typing StructuralTyping Implementation Interface Trait Inference Infer Source Generator Analyzer Roslyn</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="../GlobalUsings.g.cs"/>
-        <PackageReference Remove="UnitGenerator"/>
         <Compile Remove="$(Morsels)/Compile/**/*.cs"/>
         <PackageReference Include="Emik.Unions" Version="2.1.1" PrivateAssets="all"/>
         <PackageReference Include="Emik.Results" Version="2.1.1" PrivateAssets="all"/>
