@@ -24,7 +24,6 @@ public sealed class TheCylinderThatFitsInTheSquareHole : IIncrementalGenerator
     static void Go(SourceProductionContext context, ((INamedTypeSymbol, IList<InterfaceTree>), Config) tuple)
     {
         var ((named, trees), config) = tuple;
-
         trees.SelectMany(x => Substitutes.From(named, x, config)).Then(Scaffolder.Generate)?.AddTo(context);
     }
 
@@ -37,6 +36,8 @@ public sealed class TheCylinderThatFitsInTheSquareHole : IIncrementalGenerator
            .Where(x => x.IsFullyAccessible(compilation.Assembly))
            .Then(InterfaceTree.From);
 
-    static INamedTypeSymbol? Transform(SyntaxNode _, ISymbol x, SemanticModel __, CancellationToken ___) =>
-        x is INamedTypeSymbol named && !named.IsInterface() && named.IsExtendable() ? named : null;
+    static INamedTypeSymbol? Transform(SyntaxNode node, ISymbol symbol, SemanticModel _, CancellationToken token) =>
+        symbol is INamedTypeSymbol named && !named.IsInterface() && named.IsExtendable() && node.IsFirst(symbol, token)
+            ? named
+            : null;
 }
